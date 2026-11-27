@@ -1,0 +1,43 @@
+# compiled output
+/dist
+/node_modules
+/build
+*.tsbuildinfo
+
+# GraphQL schema generado (solo en repos graphql)
+# src/schema.gql
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs (se comparte solo la config de VS Code del equipo)
+/.idea
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# dotenv: NUNCA subir .env (tiene secretos). Sí se suben los de ejemplo/test.
+.env
+.env.*
+!.env.example
+!.env.test
+
+# temp
+.temp
+.tmp

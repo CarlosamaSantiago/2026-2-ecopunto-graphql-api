@@ -1,0 +1,29 @@
+# Base de datos local para desarrollo.
+#   docker compose up -d      -> levanta Postgres en localhost:5434
+#   docker compose down       -> lo apaga (los datos quedan en el volumen)
+#   docker compose down -v    -> lo apaga y BORRA los datos
+#
+# Se usa el puerto 5433 (no 5432) para no chocar con un Postgres instalado
+# en el computador (pasa mucho en Windows).
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ecopunto-gql-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecopunto
+    ports:
+      - '5434:5432'
+    volumes:
+      - ecopunto-gql-pgdata:/var/lib/postgresql/data
+      - ./docker/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ecopunto-gql-pgdata:

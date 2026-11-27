@@ -1,0 +1,64 @@
+# 👤 Santiago — Auth + Gestión de usuarios
+# Pegar en Apollo Sandbox (http://localhost:4100/graphql) junto con fragments.graphql
+
+mutation Seed {
+  executeSeed
+}
+
+mutation Register($registerInput: RegisterInput!) {
+  register(input: $registerInput) {
+    token
+    user {
+      ...UserBasic
+    }
+  }
+}
+
+mutation Login($loginInput: LoginInput!) {
+  login(input: $loginInput) {
+    token
+    user {
+      ...UserProfile
+    }
+  }
+}
+
+query Me {
+  me {
+    ...UserProfile
+  }
+}
+
+mutation Logout {
+  logout
+}
+
+query Users($filter: UsersFilterInput, $pagination: PaginationInput) {
+  users(filter: $filter, pagination: $pagination) {
+    data {
+      ...UserBasic
+    }
+    meta {
+      ...PageMetaFields
+    }
+  }
+}
+
+mutation CreateUser($createUserInput: CreateUserInput!) {
+  createUser(input: $createUserInput) {
+    ...UserProfile
+  }
+}
+
+mutation UpdateUser($userId: ID!, $updateUserInput: UpdateUserInput!) {
+  updateUser(id: $userId, input: $updateUserInput) {
+    ...UserProfile
+  }
+}
+
+mutation RemoveUser($userId: ID!) {
+  removeUser(id: $userId) {
+    ...UserBasic
+    isActive
+  }
+}

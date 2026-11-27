@@ -1,0 +1,78 @@
+# 👤 María José — Recolecciones (entidad principal), recompensas, notificaciones
+
+mutation CreatePickup($pickupInput: CreatePickupInput!) {
+  createPickup(input: $pickupInput) {
+    ...PickupSummary
+  }
+}
+
+query MyPickups($pickupsFilter: PickupsFilterInput, $pagination: PaginationInput) {
+  pickups(filter: $pickupsFilter, pagination: $pagination) {
+    data {
+      ...PickupSummary
+    }
+    meta {
+      ...PageMetaFields
+    }
+  }
+}
+
+query PickupTracking($pickupId: ID!) {
+  pickup(id: $pickupId) {
+    ...PickupDetail
+  }
+}
+
+mutation UpdatePickup($pickupId: ID!, $updatePickupInput: UpdatePickupInput!) {
+  updatePickup(id: $pickupId, input: $updatePickupInput) {
+    ...PickupSummary
+  }
+}
+
+mutation RemovePickup($pickupId: ID!) {
+  removePickup(id: $pickupId) {
+    id
+  }
+}
+
+mutation AdvancePickup($pickupId: ID!, $statusInput: UpdatePickupStatusInput!) {
+  updatePickupStatus(id: $pickupId, input: $statusInput) {
+    ...PickupDetail
+  }
+}
+
+query RewardsScreen {
+  myRewardsSummary {
+    ecoPoints
+    level {
+      name
+      next
+      pointsToNext
+    }
+    impact {
+      batteries
+      oilLiters
+      electronics
+      waterProtectedLiters
+    }
+  }
+  rewards {
+    ...RewardFields
+  }
+}
+
+mutation Redeem($rewardId: ID!) {
+  redeemReward(rewardId: $rewardId) {
+    code
+    reward {
+      ...RewardFields
+    }
+  }
+}
+
+query Notifications {
+  unreadNotificationsCount
+  myNotifications {
+    ...NotificationFields
+  }
+}

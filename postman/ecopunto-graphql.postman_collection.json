@@ -1,0 +1,780 @@
+{
+  "info": {
+    "name": "EcoPunto GraphQL",
+    "description": "Generada con `pnpm postman` desde /operations. Orden: Seed -> Login (guarda el token) -> lo demás.\nCredenciales: admin@ / operador@ / camila@ecopunto.co — Ecopunto123",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4100/graphql"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01-auth-users",
+      "item": [
+        {
+          "name": "Seed",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation Seed {\n  executeSeed\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json().data || {};",
+                  "const t = (d.login || d.register || {}).token;",
+                  "if (t) pm.collectionVariables.set('token', t);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation Register($registerInput: RegisterInput!) {\n  register(input: $registerInput) {\n    token\n    user {\n      ...UserBasic\n    }\n  }\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{\n  \"registerInput\": {\n    \"fullName\": \"Nuevo Usuario\",\n    \"email\": \"nuevo@ecopunto.co\",\n    \"password\": \"Abc12345\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json().data || {};",
+                  "const t = (d.login || d.register || {}).token;",
+                  "if (t) pm.collectionVariables.set('token', t);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation Login($loginInput: LoginInput!) {\n  login(input: $loginInput) {\n    token\n    user {\n      ...UserProfile\n    }\n  }\n}\n\nfragment UserProfile on User {\n  ...UserBasic\n  phone\n  ecoPoints\n  isActive\n  twoFactorEnabled\n  createdAt\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{\n  \"loginInput\": {\n    \"email\": \"camila@ecopunto.co\",\n    \"password\": \"Ecopunto123\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Me {\n  me {\n    ...UserProfile\n  }\n}\n\nfragment UserProfile on User {\n  ...UserBasic\n  phone\n  ecoPoints\n  isActive\n  twoFactorEnabled\n  createdAt\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation Logout {\n  logout\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Users",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Users($filter: UsersFilterInput, $pagination: PaginationInput) {\n  users(filter: $filter, pagination: $pagination) {\n    data {\n      ...UserBasic\n    }\n    meta {\n      ...PageMetaFields\n    }\n  }\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}\n\nfragment PageMetaFields on PageMeta {\n  total\n  page\n  limit\n  totalPages\n}",
+                "variables": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CreateUser",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateUser($createUserInput: CreateUserInput!) {\n  createUser(input: $createUserInput) {\n    ...UserProfile\n  }\n}\n\nfragment UserProfile on User {\n  ...UserBasic\n  phone\n  ecoPoints\n  isActive\n  twoFactorEnabled\n  createdAt\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{\n  \"createUserInput\": {\n    \"fullName\": \"Operador Nuevo\",\n    \"email\": \"op2@ecopunto.co\",\n    \"password\": \"Abc12345\",\n    \"roles\": [\n      \"operator\"\n    ]\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "UpdateUser",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateUser($userId: ID!, $updateUserInput: UpdateUserInput!) {\n  updateUser(id: $userId, input: $updateUserInput) {\n    ...UserProfile\n  }\n}\n\nfragment UserProfile on User {\n  ...UserBasic\n  phone\n  ecoPoints\n  isActive\n  twoFactorEnabled\n  createdAt\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "RemoveUser",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation RemoveUser($userId: ID!) {\n  removeUser(id: $userId) {\n    ...UserBasic\n    isActive\n  }\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02-points-addresses",
+      "item": [
+        {
+          "name": "Categories",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Categories {\n  wasteCategories {\n    ...CategoryFields\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "NearbyPoints",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query NearbyPoints($nearbyInput: NearbyPointsInput!) {\n  nearbyCollectionPoints(input: $nearbyInput) {\n    distanceKm\n    isOpenNow\n    point {\n      ...PointCard\n    }\n  }\n}\n\nfragment PointCard on CollectionPoint {\n  id\n  name\n  address\n  neighborhood\n  latitude\n  longitude\n  isVerified\n  categories {\n    ...CategoryFields\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}",
+                "variables": "{\n  \"nearbyInput\": {\n    \"lat\": 3.4516,\n    \"lng\": -76.532,\n    \"category\": \"aceite\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Points",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Points($pointsFilter: CollectionPointsFilterInput, $pagination: PaginationInput) {\n  collectionPoints(filter: $pointsFilter, pagination: $pagination) {\n    data {\n      ...PointCard\n    }\n    meta {\n      ...PageMetaFields\n    }\n  }\n}\n\nfragment PointCard on CollectionPoint {\n  id\n  name\n  address\n  neighborhood\n  latitude\n  longitude\n  isVerified\n  categories {\n    ...CategoryFields\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}\n\nfragment PageMetaFields on PageMeta {\n  total\n  page\n  limit\n  totalPages\n}",
+                "variables": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Point",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Point($pointId: ID!) {\n  collectionPoint(id: $pointId) {\n    ...PointDetail\n  }\n}\n\nfragment PointDetail on CollectionPoint {\n  ...PointCard\n  description\n  city\n  phone\n  openingHours {\n    day\n    opens\n    closes\n  }\n}\n\nfragment PointCard on CollectionPoint {\n  id\n  name\n  address\n  neighborhood\n  latitude\n  longitude\n  isVerified\n  categories {\n    ...CategoryFields\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "MyAddresses",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query MyAddresses {\n  myAddresses {\n    ...AddressFields\n  }\n}\n\nfragment AddressFields on Address {\n  id\n  label\n  line\n  neighborhood\n  city\n  isDefault\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CreateAddress",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateAddress($addressInput: CreateAddressInput!) {\n  createAddress(input: $addressInput) {\n    ...AddressFields\n  }\n}\n\nfragment AddressFields on Address {\n  id\n  label\n  line\n  neighborhood\n  city\n  isDefault\n}",
+                "variables": "{\n  \"addressInput\": {\n    \"label\": \"Casa\",\n    \"line\": \"Cl. 13 # 66-40, apto 502\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03-pickups-rewards",
+      "item": [
+        {
+          "name": "CreatePickup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreatePickup($pickupInput: CreatePickupInput!) {\n  createPickup(input: $pickupInput) {\n    ...PickupSummary\n  }\n}\n\nfragment PickupSummary on Pickup {\n  id\n  status\n  scheduledDate\n  timeSlot\n  addressLine\n  fee\n  pointsAwarded\n  items {\n    quantity\n    category {\n      ...CategoryFields\n    }\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}",
+                "variables": "{\n  \"pickupInput\": {\n    \"items\": [\n      {\n        \"categoryId\": \"<uuid de aceite>\",\n        \"quantity\": \"ONE_BAG\"\n      }\n    ],\n    \"scheduledDate\": \"2026-12-01\",\n    \"timeSlot\": \"MORNING_LATE\",\n    \"addressId\": \"<uuid de mi dirección>\",\n    \"notes\": \"Dejar en portería\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "MyPickups",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query MyPickups($pickupsFilter: PickupsFilterInput, $pagination: PaginationInput) {\n  pickups(filter: $pickupsFilter, pagination: $pagination) {\n    data {\n      ...PickupSummary\n    }\n    meta {\n      ...PageMetaFields\n    }\n  }\n}\n\nfragment PickupSummary on Pickup {\n  id\n  status\n  scheduledDate\n  timeSlot\n  addressLine\n  fee\n  pointsAwarded\n  items {\n    quantity\n    category {\n      ...CategoryFields\n    }\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}\n\nfragment PageMetaFields on PageMeta {\n  total\n  page\n  limit\n  totalPages\n}",
+                "variables": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PickupTracking",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query PickupTracking($pickupId: ID!) {\n  pickup(id: $pickupId) {\n    ...PickupDetail\n  }\n}\n\nfragment PickupDetail on Pickup {\n  ...PickupSummary\n  notes\n  operator {\n    ...UserBasic\n  }\n  statusHistory {\n    status\n    note\n    createdAt\n  }\n}\n\nfragment PickupSummary on Pickup {\n  id\n  status\n  scheduledDate\n  timeSlot\n  addressLine\n  fee\n  pointsAwarded\n  items {\n    quantity\n    category {\n      ...CategoryFields\n    }\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "UpdatePickup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdatePickup($pickupId: ID!, $updatePickupInput: UpdatePickupInput!) {\n  updatePickup(id: $pickupId, input: $updatePickupInput) {\n    ...PickupSummary\n  }\n}\n\nfragment PickupSummary on Pickup {\n  id\n  status\n  scheduledDate\n  timeSlot\n  addressLine\n  fee\n  pointsAwarded\n  items {\n    quantity\n    category {\n      ...CategoryFields\n    }\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "RemovePickup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation RemovePickup($pickupId: ID!) {\n  removePickup(id: $pickupId) {\n    id\n  }\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AdvancePickup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation AdvancePickup($pickupId: ID!, $statusInput: UpdatePickupStatusInput!) {\n  updatePickupStatus(id: $pickupId, input: $statusInput) {\n    ...PickupDetail\n  }\n}\n\nfragment PickupDetail on Pickup {\n  ...PickupSummary\n  notes\n  operator {\n    ...UserBasic\n  }\n  statusHistory {\n    status\n    note\n    createdAt\n  }\n}\n\nfragment PickupSummary on Pickup {\n  id\n  status\n  scheduledDate\n  timeSlot\n  addressLine\n  fee\n  pointsAwarded\n  items {\n    quantity\n    category {\n      ...CategoryFields\n    }\n  }\n}\n\nfragment CategoryFields on WasteCategory {\n  id\n  slug\n  name\n  description\n  icon\n  pointsReward\n}\n\nfragment UserBasic on User {\n  id\n  fullName\n  email\n  roles\n}",
+                "variables": "{\n  \"statusInput\": {\n    \"status\": \"ON_THE_WAY\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "RewardsScreen",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query RewardsScreen {\n  myRewardsSummary {\n    ecoPoints\n    level {\n      name\n      next\n      pointsToNext\n    }\n    impact {\n      batteries\n      oilLiters\n      electronics\n      waterProtectedLiters\n    }\n  }\n  rewards {\n    ...RewardFields\n  }\n}\n\nfragment RewardFields on Reward {\n  id\n  title\n  description\n  cost\n  partner\n  icon\n  stock\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Redeem",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation Redeem($rewardId: ID!) {\n  redeemReward(rewardId: $rewardId) {\n    code\n    reward {\n      ...RewardFields\n    }\n  }\n}\n\nfragment RewardFields on Reward {\n  id\n  title\n  description\n  cost\n  partner\n  icon\n  stock\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Notifications",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Notifications {\n  unreadNotificationsCount\n  myNotifications {\n    ...NotificationFields\n  }\n}\n\nfragment NotificationFields on Notification {\n  id\n  type\n  title\n  body\n  isRead\n  referenceId\n  createdAt\n}",
+                "variables": "{}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

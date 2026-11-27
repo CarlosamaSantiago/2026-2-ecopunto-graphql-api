@@ -1,0 +1,123 @@
+# ============================================================
+#  FRAGMENTS reutilizables (criterio "Fragments" 10% del taller)
+#  Úsenlos en TODAS las operaciones en vez de repetir campos.
+#  👤 Cada quien mantiene los fragments de sus tipos.
+# ============================================================
+
+# --- Santiago ---
+fragment UserBasic on User {
+  id
+  fullName
+  email
+  roles
+}
+
+fragment UserProfile on User {
+  ...UserBasic
+  phone
+  ecoPoints
+  isActive
+  twoFactorEnabled
+  createdAt
+}
+
+fragment PageMetaFields on PageMeta {
+  total
+  page
+  limit
+  totalPages
+}
+
+# --- Joshua ---
+fragment CategoryFields on WasteCategory {
+  id
+  slug
+  name
+  description
+  icon
+  pointsReward
+}
+
+fragment PointCard on CollectionPoint {
+  id
+  name
+  address
+  neighborhood
+  latitude
+  longitude
+  isVerified
+  categories {
+    ...CategoryFields
+  }
+}
+
+fragment PointDetail on CollectionPoint {
+  ...PointCard
+  description
+  city
+  phone
+  openingHours {
+    day
+    opens
+    closes
+  }
+}
+
+fragment AddressFields on Address {
+  id
+  label
+  line
+  neighborhood
+  city
+  isDefault
+}
+
+# --- María José ---
+fragment PickupSummary on Pickup {
+  id
+  status
+  scheduledDate
+  timeSlot
+  addressLine
+  fee
+  pointsAwarded
+  items {
+    quantity
+    category {
+      ...CategoryFields
+    }
+  }
+}
+
+fragment PickupDetail on Pickup {
+  ...PickupSummary
+  notes
+  operator {
+    ...UserBasic
+  }
+  statusHistory {
+    status
+    note
+    createdAt
+  }
+}
+
+fragment RewardFields on Reward {
+  id
+  title
+  description
+  cost
+  partner
+  icon
+  stock
+}
+
+fragment NotificationFields on Notification {
+  id
+  type
+  title
+  body
+  isRead
+  referenceId
+  createdAt
+}

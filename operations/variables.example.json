@@ -1,0 +1,16 @@
+{
+  "loginInput": { "email": "camila@ecopunto.co", "password": "Ecopunto123" },
+  "registerInput": { "fullName": "Nuevo Usuario", "email": "nuevo@ecopunto.co", "password": "Abc12345" },
+  "createUserInput": { "fullName": "Operador Nuevo", "email": "op2@ecopunto.co", "password": "Abc12345", "roles": ["operator"] },
+  "pagination": { "page": 1, "limit": 10 },
+  "nearbyInput": { "lat": 3.4516, "lng": -76.532, "category": "aceite" },
+  "addressInput": { "label": "Casa", "line": "Cl. 13 # 66-40, apto 502" },
+  "pickupInput": {
+    "items": [{ "categoryId": "<uuid de aceite>", "quantity": "ONE_BAG" }],
+    "scheduledDate": "2026-12-01",
+    "timeSlot": "MORNING_LATE",
+    "addressId": "<uuid de mi dirección>",
+    "notes": "Dejar en portería"
+  },
+  "statusInput": { "status": "ON_THE_WAY" }
+}

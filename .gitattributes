@@ -1,0 +1,6 @@
+# Mac y Windows: todos los archivos de texto se guardan con LF en el repo.
+# Evita diffs gigantes por saltos de línea (CRLF vs LF).
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary

@@ -1,0 +1,581 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Address {
+  city: String!
+  createdAt: DateTime!
+  id: ID!
+  isDefault: Boolean!
+  label: String!
+  latitude: Float
+  line: String!
+  longitude: Float
+  neighborhood: String
+  updatedAt: DateTime!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
+type CollectionPoint {
+  address: String!
+  categories: [WasteCategory!]!
+  city: String!
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  isActive: Boolean!
+  isVerified: Boolean!
+  latitude: Float!
+  longitude: Float!
+  name: String!
+  neighborhood: String!
+  openingHours: [OpeningHour!]!
+  phone: String
+  updatedAt: DateTime!
+}
+
+input CollectionPointsFilterInput {
+  """slug de categoría"""
+  category: String
+  search: String
+  verified: Boolean
+}
+
+input CreateAddressInput {
+  city: String
+  isDefault: Boolean
+  label: String!
+  latitude: Float
+  line: String!
+  longitude: Float
+  neighborhood: String
+}
+
+input CreateCollectionPointInput {
+  address: String!
+  categoryIds: [ID!]!
+  city: String
+  description: String
+  latitude: Float!
+  longitude: Float!
+  name: String!
+  neighborhood: String!
+  openingHours: [OpeningHourInput!]!
+  operatorId: ID
+  phone: String
+}
+
+input CreateDropOffInput {
+  categoryId: ID!
+  pointId: ID!
+  quantity: Float!
+  userEmail: String!
+}
+
+input CreatePickupInput {
+  addressId: ID!
+  items: [PickupItemInput!]!
+  notes: String
+
+  """YYYY-MM-DD, hoy o futuro"""
+  scheduledDate: String!
+  timeSlot: TimeSlot!
+}
+
+input CreateRewardInput {
+  cost: Int!
+  description: String
+  icon: String
+  isActive: Boolean
+  partner: String
+  stock: Int
+  title: String!
+}
+
+input CreateUserInput {
+  email: String!
+  fullName: String!
+  password: String!
+  phone: String
+  roles: [ValidRoles!]! = [citizen]
+}
+
+input CreateWasteCategoryInput {
+  deliveryInstructions: String!
+  description: String!
+  icon: String!
+  isActive: Boolean
+  name: String!
+  pointsReward: Int
+
+  """minúsculas, sin espacios. Ej: aceite"""
+  slug: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DropOff {
+  category: WasteCategory!
+  createdAt: DateTime!
+  id: ID!
+  point: CollectionPoint!
+  pointsAwarded: Int!
+  quantity: Float!
+  updatedAt: DateTime!
+}
+
+type EcoLevel {
+  name: String!
+  next: String
+  pointsToNext: Int!
+}
+
+type EcoPointTransaction {
+  amount: Int!
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  referenceId: ID
+  type: EcoPointTransactionType!
+  updatedAt: DateTime!
+}
+
+enum EcoPointTransactionType {
+  ADJUSTMENT
+  DROP_OFF
+  PICKUP
+  REDEMPTION
+}
+
+type ImpactStats {
+  batteries: Int!
+  electronics: Int!
+  oilLiters: Float!
+  waterProtectedLiters: Float!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  """[admin] Asignar reciclador"""
+  assignPickupOperator(id: ID!, operatorId: ID!): Pickup!
+  createAddress(input: CreateAddressInput!): Address!
+  createCollectionPoint(input: CreateCollectionPointInput!): CollectionPoint!
+
+  """Agendar recolección"""
+  createPickup(input: CreatePickupInput!): Pickup!
+  createReward(input: CreateRewardInput!): Reward!
+
+  """[admin] Crear usuario"""
+  createUser(input: CreateUserInput!): User!
+  createWasteCategory(input: CreateWasteCategoryInput!): WasteCategory!
+
+  """⚠️ Borra la BD y carga datos iniciales (requiere SEED_ENABLED=true)"""
+  executeSeed: String!
+
+  """Iniciar sesión, devuelve JWT"""
+  login(input: LoginInput!): AuthResponse!
+
+  """Cerrar sesión (invalida los tokens)"""
+  logout: Boolean!
+
+  """Devuelve cuántas se marcaron"""
+  markAllNotificationsAsRead: Int!
+  markNotificationAsRead(id: ID!): Notification!
+
+  """Canjear cupón"""
+  redeemReward(rewardId: ID!): Redemption!
+
+  """Crear cuenta (rol citizen)"""
+  register(input: RegisterInput!): AuthResponse!
+
+  """[operator | admin] Registrar entrega en punto"""
+  registerDropOff(input: CreateDropOffInput!): DropOff!
+  removeAddress(id: ID!): Address!
+
+  """Soft delete"""
+  removeCollectionPoint(id: ID!): CollectionPoint!
+
+  """Eliminar (dueño o admin)"""
+  removePickup(id: ID!): Pickup!
+
+  """Soft delete"""
+  removeReward(id: ID!): Reward!
+
+  """[admin] Eliminar (desactivar) usuario"""
+  removeUser(id: ID!): User!
+
+  """Soft delete"""
+  removeWasteCategory(id: ID!): WasteCategory!
+
+  """[admin] Sello de verificado"""
+  setCollectionPointVerified(id: ID!, isVerified: Boolean!): CollectionPoint!
+  setDefaultAddress(id: ID!): Address!
+  updateAddress(id: ID!, input: UpdateAddressInput!): Address!
+
+  """[admin | operator dueño]"""
+  updateCollectionPoint(id: ID!, input: UpdateCollectionPointInput!): CollectionPoint!
+
+  """Modificar (dueño o admin)"""
+  updatePickup(id: ID!, input: UpdatePickupInput!): Pickup!
+
+  """[operator | admin] Avanzar estado"""
+  updatePickupStatus(id: ID!, input: UpdatePickupStatusInput!): Pickup!
+
+  """Editar mi perfil"""
+  updateProfile(input: UpdateProfileInput!): User!
+  updateReward(id: ID!, input: UpdateRewardInput!): Reward!
+
+  """[admin] Modificar usuario (incluye roles)"""
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  updateWasteCategory(id: ID!, input: UpdateWasteCategoryInput!): WasteCategory!
+}
+
+type NearbyCollectionPoint {
+  distanceKm: Float!
+  isOpenNow: Boolean!
+  point: CollectionPoint!
+}
+
+input NearbyPointsInput {
+  category: String
+  lat: Float!
+  limit: Int! = 10
+  lng: Float!
+  radiusKm: Float! = 5
+}
+
+type Notification {
+  body: String!
+  createdAt: DateTime!
+  id: ID!
+  isRead: Boolean!
+  referenceId: String
+  title: String!
+  type: NotificationType!
+  updatedAt: DateTime!
+}
+
+enum NotificationType {
+  PICKUP_STATUS
+  POINTS
+  REWARD
+  SYSTEM
+}
+
+type OpeningHour {
+  closes: String!
+  day: Int!
+  opens: String!
+}
+
+input OpeningHourInput {
+  closes: String!
+
+  """0 = domingo ... 6 = sábado"""
+  day: Int!
+  opens: String!
+}
+
+type PageMeta {
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+type PaginatedCollectionPoints {
+  data: [CollectionPoint!]!
+  meta: PageMeta!
+}
+
+type PaginatedEcoPointTransactions {
+  data: [EcoPointTransaction!]!
+  meta: PageMeta!
+}
+
+type PaginatedPickups {
+  data: [Pickup!]!
+  meta: PageMeta!
+}
+
+type PaginatedUsers {
+  data: [User!]!
+  meta: PageMeta!
+}
+
+input PaginationInput {
+  limit: Int! = 10
+  page: Int! = 1
+}
+
+type Pickup {
+  address: Address
+  addressLine: String!
+  createdAt: DateTime!
+  fee: Int!
+  id: ID!
+  items: [PickupItem!]!
+  notes: String
+  operator: User
+  pointsAwarded: Int!
+
+  """YYYY-MM-DD"""
+  scheduledDate: String!
+  status: PickupStatus!
+  statusHistory: [PickupStatusLog!]
+  timeSlot: TimeSlot!
+  updatedAt: DateTime!
+  user: User!
+}
+
+type PickupItem {
+  category: WasteCategory!
+  createdAt: DateTime!
+  id: ID!
+  quantity: PickupQuantity!
+  updatedAt: DateTime!
+}
+
+input PickupItemInput {
+  categoryId: ID!
+  quantity: PickupQuantity!
+}
+
+enum PickupQuantity {
+  MORE_THAN_THREE
+  ONE_BAG
+  TWO_THREE_BAGS
+}
+
+enum PickupStatus {
+  CANCELLED
+  DELIVERED
+  ON_THE_WAY
+  PICKED_UP
+  SCHEDULED
+}
+
+type PickupStatusLog {
+  changedBy: User
+  createdAt: DateTime!
+  id: ID!
+  note: String
+  status: PickupStatus!
+  updatedAt: DateTime!
+}
+
+input PickupsFilterInput {
+  status: PickupStatus
+}
+
+type ProfileStats {
+  coupons: Int!
+  pickups: Int!
+  pointsVisited: Int!
+}
+
+type Query {
+  collectionPoint(id: ID!): CollectionPoint!
+  collectionPoints(filter: CollectionPointsFilterInput = {}, pagination: PaginationInput = {limit: 10, page: 1}): PaginatedCollectionPoints!
+
+  """Usuario autenticado"""
+  me: User!
+  myAddresses: [Address!]!
+  myNotifications: [Notification!]!
+
+  """Historial de EcoPuntos"""
+  myPointTransactions(pagination: PaginationInput = {limit: 10, page: 1}): PaginatedEcoPointTransactions!
+  myRedemptions: [Redemption!]!
+
+  """Mis EcoPuntos, nivel e impacto"""
+  myRewardsSummary: RewardsSummary!
+
+  """El recomendador"""
+  nearbyCollectionPoints(input: NearbyPointsInput!): [NearbyCollectionPoint!]!
+  pickup(id: ID!): Pickup!
+
+  """citizen: las suyas · operator: asignadas · admin: todas"""
+  pickups(filter: PickupsFilterInput = {}, pagination: PaginationInput = {limit: 10, page: 1}): PaginatedPickups!
+
+  """Catálogo de cupones"""
+  rewards: [Reward!]!
+  unreadNotificationsCount: Int!
+  user(id: ID!): User!
+
+  """Lista de usuarios (cualquier autenticado)"""
+  users(filter: UsersFilterInput = {}, pagination: PaginationInput = {limit: 10, page: 1}): PaginatedUsers!
+
+  """Pilas, electrónicos, aceite"""
+  wasteCategories: [WasteCategory!]!
+
+  """Por slug o id"""
+  wasteCategory(term: String!): WasteCategory!
+}
+
+type Redemption {
+  code: String!
+  cost: Int!
+  createdAt: DateTime!
+  id: ID!
+  reward: Reward!
+  updatedAt: DateTime!
+  usedAt: DateTime
+}
+
+input RegisterInput {
+  email: String!
+  fullName: String!
+
+  """Mín. 8 caracteres, una mayúscula, una minúscula y un número"""
+  password: String!
+  phone: String
+}
+
+type Reward {
+  cost: Int!
+  createdAt: DateTime!
+  description: String
+  icon: String!
+  id: ID!
+  isActive: Boolean!
+  partner: String
+
+  """null = ilimitado"""
+  stock: Int
+  title: String!
+  updatedAt: DateTime!
+}
+
+type RewardsSummary {
+  ecoPoints: Int!
+  impact: ImpactStats!
+  level: EcoLevel!
+  stats: ProfileStats!
+}
+
+enum TimeSlot {
+  AFTERNOON_EARLY
+  AFTERNOON_LATE
+  MORNING_EARLY
+  MORNING_LATE
+}
+
+input UpdateAddressInput {
+  city: String
+  isDefault: Boolean
+  label: String
+  latitude: Float
+  line: String
+  longitude: Float
+  neighborhood: String
+}
+
+input UpdateCollectionPointInput {
+  address: String
+  categoryIds: [ID!]
+  city: String
+  description: String
+  latitude: Float
+  longitude: Float
+  name: String
+  neighborhood: String
+  openingHours: [OpeningHourInput!]
+  operatorId: ID
+  phone: String
+}
+
+input UpdatePickupInput {
+  notes: String
+  scheduledDate: String
+  timeSlot: TimeSlot
+}
+
+input UpdatePickupStatusInput {
+  note: String
+  status: PickupStatus!
+}
+
+input UpdateProfileInput {
+  fullName: String
+  phone: String
+}
+
+input UpdateRewardInput {
+  cost: Int
+  description: String
+  icon: String
+  isActive: Boolean
+  partner: String
+  stock: Int
+  title: String
+}
+
+input UpdateUserInput {
+  email: String
+  fullName: String
+  password: String
+  phone: String
+  roles: [ValidRoles!] = [citizen]
+}
+
+input UpdateWasteCategoryInput {
+  deliveryInstructions: String
+  description: String
+  icon: String
+  isActive: Boolean
+  name: String
+  pointsReward: Int
+
+  """minúsculas, sin espacios. Ej: aceite"""
+  slug: String
+}
+
+type User {
+  createdAt: DateTime!
+  ecoPoints: Int!
+  email: String!
+  fullName: String!
+  id: ID!
+  isActive: Boolean!
+  phone: String
+  roles: [ValidRoles!]!
+  twoFactorEnabled: Boolean!
+  updatedAt: DateTime!
+}
+
+input UsersFilterInput {
+  role: ValidRoles
+
+  """Busca por nombre o correo"""
+  search: String
+}
+
+enum ValidRoles {
+  admin
+  citizen
+  operator
+}
+
+type WasteCategory {
+  createdAt: DateTime!
+  deliveryInstructions: String!
+  description: String!
+  icon: String!
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  pointsReward: Int!
+  slug: String!
+  updatedAt: DateTime!
+}

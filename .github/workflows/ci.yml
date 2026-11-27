@@ -1,0 +1,69 @@
+name: CI
+
+# Corre en cada push y en cada Pull Request hacia main/develop.
+# Si falla, NO se hace merge (configurar branch protection en GitHub).
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Postgres real para los tests e2e (mismos datos que .env.test)
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ecopunto_test
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Pruebas e2e (supertest) — también regenera src/schema.gql
+        run: pnpm test:e2e
+
+      - name: Pruebas unitarias + cobertura
+        run: pnpm test:cov
+
+      - name: Compilar
+        run: pnpm build
+
+  # TODO(Santiago): job de despliegue automático cuando el push es a main.
+  # Ver docs/DEPLOY.md. Ejemplo con Render (deploy hook):
+  # deploy:
+  #   needs: test
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

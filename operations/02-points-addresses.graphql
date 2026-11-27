@@ -1,0 +1,46 @@
+# 👤 Joshua — Categorías, puntos, direcciones
+
+query Categories {
+  wasteCategories {
+    ...CategoryFields
+  }
+}
+
+query NearbyPoints($nearbyInput: NearbyPointsInput!) {
+  nearbyCollectionPoints(input: $nearbyInput) {
+    distanceKm
+    isOpenNow
+    point {
+      ...PointCard
+    }
+  }
+}
+
+query Points($pointsFilter: CollectionPointsFilterInput, $pagination: PaginationInput) {
+  collectionPoints(filter: $pointsFilter, pagination: $pagination) {
+    data {
+      ...PointCard
+    }
+    meta {
+      ...PageMetaFields
+    }
+  }
+}
+
+query Point($pointId: ID!) {
+  collectionPoint(id: $pointId) {
+    ...PointDetail
+  }
+}
+
+query MyAddresses {
+  myAddresses {
+    ...AddressFields
+  }
+}
+
+mutation CreateAddress($addressInput: CreateAddressInput!) {
+  createAddress(input: $addressInput) {
+    ...AddressFields
+  }
+}
